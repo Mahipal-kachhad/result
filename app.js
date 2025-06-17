@@ -52,8 +52,8 @@ app.get("/insert/:name/:phys/:chem/:math/:comp/:engl", (req, res) => {
 
   if (pr > 90) grade = "A";
   else if (pr > 80) grade = "B";
-  else if (pr > 70) grade = "c";
-  else if (pr > 60) grade = "d";
+  else if (pr > 70) grade = "C";
+  else if (pr > 60) grade = "D";
   else if (pr > 50) grade = "E";
   else grade = "F";
 
@@ -88,7 +88,6 @@ app.get("/search/:parameter/:value", (req, res) => {
   } else {
     query = `select * from students where ${parameter} = ?`;
   }
-  console.log(query);
   con.query(query, [value], (err, result) => {
     if (err) return err;
     res.status(200).json({
