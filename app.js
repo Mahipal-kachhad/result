@@ -38,13 +38,13 @@ app.get("/add/:name/:phys/:chem/:math/:comp/:engl", (req, res) => {
     grade;
   subs.map((val) => {
     const num = Number(val);
-    total += num
+    total += num;
     if (num < min) min = num;
     if (num > max) max = num;
     if (num < 33) cnt++;
   });
 
-  pr = total / 5;
+  pr = parseFloat((total / 5).toFixed(2));
 
   if (cnt > 2) status = "FAIL";
   else if (cnt > 0) status = "ATKT";
@@ -69,5 +69,34 @@ app.get("/add/:name/:phys/:chem/:math/:comp/:engl", (req, res) => {
   );
 });
 
+app.get("/delete/:id", (req, res) => {
+  const id = req.params.id;
+  const query = "delete from students where id=?";
+  con.query(query, [id], (err) => {
+    if (err) return err;
+    res.redirect("/");
+  });
+});
 
-app.listen(3000)
+app.get("/search/:parameter/:value", (req, res) => {
+  const parameter = req.params.parameter;
+  const value = req.params.value;
+  const allvalue = ["ATKT", "PASS", "FAIL"];
+  if (!allvalue.includes(value)) return;
+
+  const query = `select * from students where ${parameter} = ?`;
+  con.query(query, [value], (err, result) => {
+    if(err) 
+    res.status(200).json({
+      status: "success",
+      result,
+    });
+  });
+});
+
+
+
+
+
+
+app.listen(3000);
