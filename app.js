@@ -20,7 +20,7 @@ app.get("/", (req, res) => {
   });
 });
 
-app.get("/add/:name/:phys/:chem/:math/:comp/:engl", (req, res) => {
+app.get("/insert/:name/:phys/:chem/:math/:comp/:engl", (req, res) => {
   const name = req.params.name;
   const phys = req.params.phys;
   const chem = req.params.chem;
@@ -80,22 +80,22 @@ app.get("/delete/:id", (req, res) => {
 
 app.get("/search/:parameter/:value", (req, res) => {
   const parameter = req.params.parameter;
-  const value = req.params.value;
-  const allvalue = ["ATKT", "PASS", "FAIL"];
-  if (!allvalue.includes(value)) return;
-  const query = `select * from students where ${parameter} = ?`;
+  let value = req.params.value;
+  let query;
+  if (parameter === "top") {
+    query = "select * from students order by pr desc limit ?";
+    value = parseInt(value);
+  } else {
+    query = `select * from students where ${parameter} = ?`;
+  }
+  console.log(query);
   con.query(query, [value], (err, result) => {
-    if(err) 
+    if (err) return err;
     res.status(200).json({
       status: "success",
       result,
     });
   });
 });
-
-
-
-
-
 
 app.listen(3000);
