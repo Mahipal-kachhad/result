@@ -83,7 +83,6 @@ app.get("/search/:parameter/:value", (req, res) => {
   const value = req.params.value;
   const allvalue = ["ATKT", "PASS", "FAIL"];
   if (!allvalue.includes(value)) return;
-
   const query = `select * from students where ${parameter} = ?`;
   con.query(query, [value], (err, result) => {
     if(err) 
