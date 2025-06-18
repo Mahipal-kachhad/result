@@ -8,11 +8,19 @@ const con = mysql.createConnection({
   database: "result",
 });
 
-con.connect();
+
+con.connect((err) => {
+  if (err) {
+    console.error("Database connection failed: " + err.stack);
+    process.exit(1);
+  }
+  console.log("Connected to database.");
+});
 
 app.get("/", (req, res) => {
   con.query("select * from students", (err, result) => {
-    if (err) return err;
+    if (err)
+      return res.status(500).json({ status: "error", message: err.message });
     res.status(200).json({
       status: "success",
       result,
@@ -45,7 +53,7 @@ app.get("/insert/:name/:phys/:chem/:math/:comp/:engl", (req, res) => {
   });
 
   pr = parseFloat((total / 5).toFixed(2));
-  
+
   if (cnt > 2) status = "FAIL";
   else if (cnt > 0) status = "ATKT";
   else status = "PASS";
@@ -63,7 +71,8 @@ app.get("/insert/:name/:phys/:chem/:math/:comp/:engl", (req, res) => {
     query,
     [name, phys, chem, math, comp, engl, total, pr, min, max, grade, status],
     (err) => {
-      if (err) return err;
+      if (err)
+        return res.status(500).json({ status: "error", message: err.message });
       res.redirect("/");
     }
   );
@@ -73,7 +82,8 @@ app.get("/delete/:id", (req, res) => {
   const id = req.params.id;
   const query = "delete from students where id=?";
   con.query(query, [id], (err) => {
-    if (err) return err;
+    if (err)
+      return res.status(500).json({ status: "error", message: err.message });
     res.redirect("/");
   });
 });
@@ -82,6 +92,14 @@ app.get("/search/:parameter/:value", (req, res) => {
   const parameter = req.params.parameter;
   let value = req.params.value;
   let query;
+
+  const validParams = ["name", "grade", "status", "id"];
+  if (!validParams.includes(parameter)) {
+    return res
+      .status(400)
+      .json({ status: "error", message: "Invalid parameter" });
+  }
+
   if (parameter === "top") {
     query = "select * from students order by pr desc limit ?";
     value = parseInt(value);
@@ -89,7 +107,8 @@ app.get("/search/:parameter/:value", (req, res) => {
     query = `select * from students where ${parameter} = ?`;
   }
   con.query(query, [value], (err, result) => {
-    if (err) return err;
+    if (err)
+      return res.status(500).json({ status: "error", message: err.message });
     res.status(200).json({
       status: "success",
       result,
