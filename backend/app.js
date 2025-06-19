@@ -29,7 +29,7 @@ app.get("/", (req, res) => {
   });
 });
 
-app.get("/insert/:name/:phys/:chem/:math/:comp/:engl", (req, res) => {
+app.post("/insert/:name/:phys/:chem/:math/:comp/:engl", (req, res) => {
   const name = req.params.name;
   const phys = req.params.phys;
   const chem = req.params.chem;
@@ -79,7 +79,7 @@ app.get("/insert/:name/:phys/:chem/:math/:comp/:engl", (req, res) => {
   );
 });
 
-app.get("/delete/:id", (req, res) => {
+app.delete("/delete/:id", (req, res) => {
   const id = req.params.id;
   const query = "delete from students where id=?";
   con.query(query, [id], (err) => {
