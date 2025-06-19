@@ -1,13 +1,14 @@
+require("dotenv").config();
 const mysql = require("mysql2");
 const express = require("express");
 const app = express();
+const port = process.env.PORT || 3000;
 const con = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "",
-  database: "result",
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASS,
+  database: process.env.DB_NAME,
 });
-
 
 con.connect((err) => {
   if (err) {
@@ -69,7 +70,7 @@ app.get("/insert/:name/:phys/:chem/:math/:comp/:engl", (req, res) => {
     "insert into students(name, phys, chem, math, comp, engl, total, pr, min, max, grade, status) values(?,?,?,?,?,?,?,?,?,?,?,?)";
   con.query(
     query,
-    [name, phys, chem, math, comp, engl, total, pr, min, max, grade, status],
+    [name, ...subs, total, pr, min, max, grade, status],
     (err) => {
       if (err)
         return res.status(500).json({ status: "error", message: err.message });
@@ -116,4 +117,6 @@ app.get("/search/:parameter/:value", (req, res) => {
   });
 });
 
-app.listen(3000);
+app.listen(port, () => {
+  console.log(`server is running on port ${port}`);
+});
