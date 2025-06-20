@@ -3,13 +3,15 @@ import "./App.css";
 import Form from "./components/form";
 import { Route, Routes } from "react-router-dom";
 import Menubar from "./components/menubar";
+import Data from "./components/Data";
 
 function App() {
   return (
     <div>
-      <Menubar/>
+      <Menubar />
       <Routes>
         <Route path="/Form" element={<Form />} />
+        <Route path="/Data" element={<Data />} />
       </Routes>
     </div>
   );

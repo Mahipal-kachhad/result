@@ -13,6 +13,16 @@ const Menubar = () => {
           Form
         </NavLink>
       </div>
+      <div className="w-fit mx-2">
+        <NavLink
+          to={"/Data"}
+          className={({ isActive }) =>
+            `${isActive ? "active " : ""} px-3 py-2 rounded`
+          }
+        >
+          Data
+        </NavLink>
+      </div>
     </div>
   );
 };
