@@ -2,6 +2,8 @@ require("dotenv").config();
 const mysql = require("mysql2");
 const express = require("express");
 const app = express();
+const cors = require("cors");
+app.use(cors());
 const port = process.env.PORT || 3000;
 const con = mysql.createConnection({
   host: process.env.DB_HOST,
@@ -9,7 +11,7 @@ const con = mysql.createConnection({
   password: process.env.DB_PASS,
   database: process.env.DB_NAME,
 });
-
+app.use(express.json());
 con.connect((err) => {
   if (err) {
     console.error("Database connection failed: " + err.stack);
@@ -29,13 +31,8 @@ app.get("/", (req, res) => {
   });
 });
 
-app.post("/insert/:name/:phys/:chem/:math/:comp/:engl", (req, res) => {
-  const name = req.params.name;
-  const phys = req.params.phys;
-  const chem = req.params.chem;
-  const math = req.params.math;
-  const comp = req.params.comp;
-  const engl = req.params.engl;
+app.post("/insert", (req, res) => {
+  const { name, phys, chem, math, comp, engl } = req.body;
 
   const subs = [phys, chem, math, comp, engl];
   let total = 0,

@@ -20,11 +20,8 @@ const Form = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const { name, phys, chem, math, comp, engl } = data;
     try {
-      const responce = await axios.post(
-        `http://localhost:3000/insert/${name}/${phys}/${chem}/${math}/${comp}/${engl}`
-      );
+      const responce = await axios.post(`http://localhost:3000/insert`, data);
       console.log("data submitted successfully" + responce.data);
     } catch (err) {
       console.error("error subbmitting data" + err);
@@ -35,7 +32,7 @@ const Form = () => {
     <div className="container mt-5">
       <div className="card shadow p-4">
         <h2 className="mb-4 text-center text-primary">Student Marks Form</h2>
-        <form>
+        <form onSubmit={handleSubmit}>
           <div className="mb-3">
             <label htmlFor="name" className="form-label">
               Name
@@ -116,7 +113,6 @@ const Form = () => {
           </div>
           <div className="text-center">
             <button
-              onClick={handleSubmit}
               type="submit"
               className="btn btn-primary px-5"
             >
